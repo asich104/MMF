@@ -1,0 +1,4 @@
+coutries_of_europe = ["Spain", "France","Germany","Poland","Netherlands"]
+coutries_of_europe.append(["Bosnia and Hercegovina"])
+coutries_of_europe.extend(["Serbia","Montenegro"])
+print(coutries_of_europe[-1])
