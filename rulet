@@ -1,0 +1,16 @@
+import random
+friends = ["Alice", "Bob", "Charlie", "David", "Emanuel"]
+random_friend = random.randint(0, 4)
+rulet = "A"
+if random_friend == 0:
+    rulet = friends[0]
+elif random_friend == 1:
+    rulet = friends[1]
+elif random_friend == 2:
+    rulet = friends[2]
+elif random_friend == 3:
+    rulet = friends[3]
+elif random_friend == 4:
+    rulet = friends[4]
+
+print(rulet)
