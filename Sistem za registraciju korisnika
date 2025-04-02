@@ -1,0 +1,100 @@
+def validacija_korisnickog_imena(korisnicko_ime):
+    karakteri_u_korisnickom_imenu = len(korisnicko_ime)
+
+
+    if karakteri_u_korisnickom_imenu < 3 or karakteri_u_korisnickom_imenu > 20:
+        print("Korisničko ime mora imati između 3 i 20 karaktera.")
+        return False
+
+
+    if not korisnicko_ime.isalnum() and "_" not in korisnicko_ime:
+        print("Korisničko ime može sadržavati samo slova, brojeve i donje crte (_).")
+        return False
+
+    return True
+
+
+def validacija_emaila(email):
+    if email.count("@") != 1:
+        print("Email mora sadržavati jedan @ i barem jedan .")
+        return False
+
+    prvi_dio, drugi_dio = email.split("@")
+
+    if not prvi_dio or not drugi_dio or "." not in drugi_dio:
+        print("Email mora imati ispravnu strukturu (npr. korisnik@domena.com).")
+        return False
+
+    return True
+
+def validacija_lozinke(lozinka):
+    broj_karaktera_u_lozinki = len(lozinka)
+    if broj_karaktera_u_lozinki < 8:
+        print("Lozinka mora sadrzati 8 karaktera, malo slovo, veliko slovo i broj")
+        return False
+    if not any(c.islower() for c in lozinka):
+        print("Lozinka mora sadrzati 8 karaktera, malo slovo, veliko slovo i broj")
+        return False
+    if not any(c.isupper() for c in lozinka):
+        print("Lozinka mora sadrzati 8 karaktera, malo slovo, veliko slovo i broj")
+        return False
+    if not any(c.isdigit()for c in lozinka):
+        print("Lozinka mora sadrzati 8 karaktera, malo slovo, veliko slovo i broj")
+        return False
+
+    return True
+
+def registracija():
+    while True:
+        korisnicko_ime = input("Unesite korisničko ime: ").strip()
+
+
+        if validacija_korisnickog_imena(korisnicko_ime):
+            break
+        else:
+            print("Unesite ispravno korisničko ime!\n")
+    while True:
+        email = input("Unesite email: ").strip()
+
+        if validacija_emaila(email):
+            break
+        else:
+            print("Unesite ispravan email!\n")
+
+
+    while True:
+        lozinka = input("Unesite lozinku: ").strip()
+
+        if validacija_lozinke(lozinka):
+            break
+        else:
+            print("Unesite ispravnu lozinku!¨\n")
+
+
+    with open("users.txt", "a", encoding="utf-8") as file:
+        file.write(f"Korisnicko ime: {korisnicko_ime}\n")
+        file.write(f"Email: {email}\n")
+        file.write(f"Lozinka: {lozinka}\n")
+        file.write("-" * 20 + "\n")
+    print("\nUneseni podaci su uspješno spremljeni u 'users.txt'.\n")
+
+    print("\nDa li želite da nastavite sa registracijom novih korisnika ili da prekinete program?")
+
+
+def pokupit_input_korisnika():
+    izbor = input("Izaberite opciju:\n1️⃣ Registracija novog korisnika\n2️⃣ Izlaz iz programa\nUnesite broj opcije: \n").strip()
+
+    if izbor == '1':
+        registracija()
+    elif izbor == '2':
+        exit()
+    else:
+        print("Pogrešan unos. Molimo pokušajte ponovo.\n\n")
+        pokupit_input_korisnika()
+
+
+def main():
+    while True:
+        pokupit_input_korisnika()
+
+main()
