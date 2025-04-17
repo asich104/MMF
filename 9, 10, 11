@@ -1,0 +1,159 @@
+import re
+
+def validacija_lozinke(lozinka):
+    if len(lozinka) < 8:
+        print("Lozinka mora imati najmanje 8 karaktera. Resetujem unos ispocetka...\n")
+        return False
+    if not re.search("[a-z]", lozinka):
+        print("Lozinka mora sadrzavati najmanje jedno malo slovo. Resetujem unos ispocetka...\n")
+        return False
+    if not re.search("[A-Z]", lozinka):
+        print("Lozinka mora sadrzavati najmanje jedno veliko slovo. Resetujem unos ispocetka...\n")
+        return False
+    if not re.search("[0-9]", lozinka):
+        print("Lozinka mora sadrzavati najmanje jedan broj. Resetujem unos ispocetka...\n")
+        return False
+    return True
+
+def validacija_emaila(email):
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        print("Neispravan format email adrese. Resetujem unos ispocetka.\n")
+        return False
+    return True
+
+def validacija_korisnickog_imena(korisnicko_ime):
+    if not (3 <= len(korisnicko_ime) <= 20):
+        print("Korisničko ime mora imati između 3 i 20 karaktera. Resetujem unos ispocetka...\n")
+        return False
+    if not re.match("^[a-zA-Z0-9_]+$", korisnicko_ime):
+        print("Korisničko ime može sadržavati samo slova, brojeve i donje crte. Resetujem unos ispocetka...\n")
+        return False
+    return True
+
+def korisnicko_ime_postoji(korisnicko_ime):
+    try:
+        with open("users.txt", "r", encoding="utf-8") as file:
+            korisnici = file.read().strip().split("--------------------------------------------------------------------------")
+            for korisnik in korisnici:
+
+                linije = korisnik.strip().split("\n")
+
+                if linije and linije[0].startswith("Korisničko ime:"):
+                    ime = linije[0].split(": ")[1]
+                    if ime == korisnicko_ime:
+                        return True
+    except FileNotFoundError:
+        return False
+    return False
+
+
+
+
+
+
+
+
+
+def registracija():
+    while True:
+        korisnicko_ime = input("Unesite korisničko ime: ").strip()
+        if not validacija_korisnickog_imena(korisnicko_ime):
+            continue
+        if korisnicko_ime_postoji(korisnicko_ime):
+            print("Korisničko ime već postoji! Molimo unesite drugo ime.\n")
+            continue
+
+        email = input("Unesite email: ").strip()
+        if not validacija_emaila(email):
+            continue
+
+        lozinka = input("Unesite lozinku: ").strip()
+        if not validacija_lozinke(lozinka):
+            continue
+
+        with open("users.txt", "a", encoding="utf-8") as file:
+            file.write(f"Korisničko ime: {korisnicko_ime}\n")
+            file.write(f"Email: {email}\n")
+            file.write(f"Lozinka: {lozinka}\n")
+            file.write("-" * 20 + "\n")
+
+        print("\nUneseni podaci su uspješno spremljeni u 'users.txt'.\n")
+        break
+
+def prikaz_korisnika():
+    try:
+        with open("users.txt", "r", encoding="utf-8") as file:
+            sadrzaj = file.read().strip()
+            if not sadrzaj:
+                print("Nema prijavljenih korisnika")
+                return
+            korisnici = sadrzaj.split("-" * 20)
+        print("\nRegistrovani korisnici:\n")
+        for korisnik in korisnici:
+            if korisnik.strip():
+                linije = korisnik.strip().split("\n")
+                korisnicko_ime = linije[0].split(": ")[1]
+                email = linije[1].split(": ")[1]
+                print(f"Korisničko ime: {korisnicko_ime}, Email: {email}")
+    except FileNotFoundError:
+        print("\nNema registrovanih korisnika.\n")
+
+def obrisi_korisnika():
+    ime_za_brisanje = input("Unesite korisničko ime koje želite obrisati: ").strip()
+    obrisano = False
+    new = ""
+
+    try:
+        with open("users.txt", "r", encoding="utf-8") as file:
+            korisnici = file.read().strip().split("-" * 20)
+
+        for korisnik in korisnici:
+            if korisnik.strip():
+                linije = korisnik.strip().split("\n")
+                ime = linije[0].split(": ")[1]
+                if ime != ime_za_brisanje:
+                    new += korisnik.strip() + "\n" + "-" * 20 + "\n"
+                else:
+                    obrisano = True
+
+        if obrisano:
+            with open("users.txt", "w", encoding="utf-8") as file:
+                file.write(new.strip())
+            print("Korisnik uspješno obrisan.\n")
+        else:
+            print("Korisnik sa tim imenom ne postoji.\n")
+    except FileNotFoundError:
+        print("Nema registrovanih korisnika.\n")
+
+
+
+
+
+
+
+
+
+def pokupit_input_korisnika():
+    print("\nIzaberite opciju:")
+    print("1️⃣ Registracija novog korisnika")
+    print("2️⃣ Prikaz svih registrovanih korisnika")
+    print("3️⃣ Brisanje korisnika")
+    print("4️⃣ Izlaz iz programa\n")
+
+    izbor = input("Unos: ").strip()
+
+    if izbor == '1':
+        registracija()
+    elif izbor == '2':
+        prikaz_korisnika()
+    elif izbor == "3":
+        obrisi_korisnika()
+    elif izbor == "4":
+        print("Izlaz iz programa.")
+        exit()
+    else:
+        print("Pogrešan unos. Molimo pokušajte ponovo.\n")
+
+def main():
+    while True:
+        pokupit_input_korisnika()
